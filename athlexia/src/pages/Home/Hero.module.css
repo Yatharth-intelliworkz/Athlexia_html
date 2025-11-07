@@ -1,0 +1,29 @@
+.wrap {
+  position: relative;
+}
+.heroImg {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+.content {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 24px;
+  color: var(--black-111);
+  /* adapt as per your old .hero_content */
+}
+.title {
+  font-size: 48px;
+  font-weight: 700;
+  line-height: 1.1;
+}
+.actions { display: flex; gap: 8px; margin-top: 12px; }
+
+/* responsive */
+@media (max-width: 992px) {
+  .title { font-size: 36px; }
+}

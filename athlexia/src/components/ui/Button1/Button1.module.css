@@ -1,0 +1,18 @@
+.btn_1 {
+  background-color: var(--red-c3);
+  padding: 7px 15px;
+  border-radius: 10px;
+  color: white;
+  font-size: 16px;
+  line-height: 24px;
+  display: flex;
+  width: fit-content;
+  align-items: center;
+  gap: 6px;
+  transition: background-color 0.3s ease;
+}
+
+.btn_1:hover {
+  background-color: #a31217; /* darker shade */
+}
+

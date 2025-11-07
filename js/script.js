@@ -187,129 +187,263 @@ $('.na_slider').on('init afterChange', function (event, slick, currentSlide) {
 // 7. TAB PRODUCT SLIDERS (Badminton, Tennis, etc.)
 // ========================================
 $(document).ready(function () {
+    const $allSliders = $('.tab_prod_bad_slider');
+    const $prevBtn = $('#tpbs-prev');
+    const $nextBtn = $('#tpbs-next');
 
-    // Initialize all sliders inside tabs
-    $('.tab_prod_bad_slider').each(function () {
-        $(this).slick({
-            infinite: false,
-            slidesToShow: 3,
-            slidesToScroll: 1,
-            dots: false,
-            arrows: false,
-            autoplay: false,
-            speed: 800,
-            pauseOnFocus: false,
-            pauseOnHover: true,
-            responsive: [
-                { breakpoint: 992, settings: { slidesToShow: 2 } },
-                { breakpoint: 576, settings: { slidesToShow: 1 } }
-            ]
-        });
-    });
+    // --- Helpers ---
+    function isInited($el) { return $el && $el.length && $el.hasClass('slick-initialized'); }
+    function getActiveSlider() { return $('.tab-pane.active .tab_prod_bad_slider'); }
 
-    // Helper: Get active tab's slider
-    function getActiveTabSlider() {
-        return $('.tab-pane.active .tab_prod_bad_slider');
+    function getSlickInstance($slider) {
+        if (!isInited($slider)) return null;
+        try { return $slider.slick('getSlick'); } catch (_) { return null; }
     }
 
-    // Global Prev/Next buttons for tab sliders
-    $('#tpbs-prev').on('click', function () {
-        getActiveTabSlider().slick('slickPrev');
-    });
-
-    $('#tpbs-next').on('click', function () {
-        getActiveTabSlider().slick('slickNext');
-    });
-
-    // Update arrow states
-    function updateTabArrows(slider) {
-        const slick = slider.slick('getSlick');
-        $('#tpbs-prev').toggleClass('disabled', slick.currentSlide === 0);
-        $('#tpbs-next').toggleClass('disabled', slick.currentSlide >= slick.slideCount - slick.options.slidesToShow);
+    function debounce(fn, wait) {
+        let t;
+        return function () {
+            clearTimeout(t);
+            const ctx = this, args = arguments;
+            t = setTimeout(() => fn.apply(ctx, args), wait);
+        };
     }
 
-    // On init & slide change
-    $('.tab_prod_bad_slider').on('init afterChange', function () {
-        updateTabArrows($(this));
-    });
+    function updateArrows($slider) {
+        const slick = getSlickInstance($slider);
+        if (!slick) {
+            $prevBtn.addClass('disabled');
+            $nextBtn.addClass('disabled');
+            return;
+        }
+        const atStart = slick.currentSlide === 0;
+        const atEnd = slick.currentSlide >= (slick.slideCount - slick.options.slidesToShow);
+        $prevBtn.toggleClass('disabled', atStart);
+        $nextBtn.toggleClass('disabled', atEnd);
+    }
+    const updateArrowsDebounced = debounce(updateArrows, 120);
 
-    // Re-init slider when tab is shown (fixes layout issues)
-    $('a[data-bs-toggle="pill"], a[data-bs-toggle="tab"]').on('shown.bs.tab', function () {
-        const activeSlider = getActiveTabSlider();
+    function strongRefresh($slider) {
+        if (!isInited($slider)) return;
+
+        try { $slider.slick('setPosition'); } catch (_) {}
+
         setTimeout(() => {
-            activeSlider.slick('setPosition');
-            updateTabArrows(activeSlider);
-        }, 150);
+            try { $slider.slick('refresh'); } catch (_) {}
+            updateArrowsDebounced($slider);
+        }, 25);
+
+        const finalize = debounce(() => {
+            try { $slider.slick('setPosition'); } catch (_) {}
+            updateArrowsDebounced($slider);
+        }, 50);
+
+        const $pane = $slider.closest('.tab-pane');
+        const $imgs = $pane.find('img');
+        let pending = 0;
+        $imgs.each(function () { if (!this.complete) pending++; });
+
+        if (pending === 0) {
+            finalize();
+        } else {
+            $imgs.on('load error', function () {
+                pending--;
+                if (pending <= 0) finalize();
+            });
+        }
+    }
+
+    function initSlider($slider) {
+        if (isInited($slider)) return;
+
+        $slider
+          .on('init afterChange reInit setPosition', function () {
+              updateArrowsDebounced($(this));
+          })
+          .slick({
+              infinite: false,
+              slidesToShow: 3,
+              slidesToScroll: 1,
+              dots: false,
+              arrows: false,
+              autoplay: false,
+              speed: 800,
+              pauseOnFocus: false,
+              pauseOnHover: true,
+              responsive: [
+                  { breakpoint: 992, settings: { slidesToShow: 2 } },
+                  { breakpoint: 576, settings: { slidesToShow: 1 } }
+              ]
+          });
+    }
+
+    // --- Initialize ALL sliders ---
+    $allSliders.each(function () { initSlider($(this)); });
+
+    // --- Global Prev/Next Buttons ---
+    $prevBtn.on('click', function () {
+        const $s = getActiveSlider();
+        if (isInited($s)) { $s.slick('slickPrev'); updateArrowsDebounced($s); }
     });
 
-    // Initial arrow state
-    setTimeout(() => {
-        updateTabArrows(getActiveTabSlider());
-    }, 300);
+    $nextBtn.on('click', function () {
+        const $s = getActiveSlider();
+        if (isInited($s)) { $s.slick('slickNext'); updateArrowsDebounced($s); }
+    });
+
+    // --- Refresh when tab becomes visible ---
+    $('a[data-bs-toggle="pill"], a[data-bs-toggle="tab"], button[data-bs-toggle="pill"], button[data-bs-toggle="tab"]')
+      .on('shown.bs.tab shown.bs.pill', function (e) {
+          const target = $(e.target).attr('data-bs-target') || $(e.target).attr('href');
+          const $pane = $(target);
+          const $slider = $pane.find('.tab_prod_bad_slider');
+          if ($slider.length) strongRefresh($slider);
+      });
+
+    // --- Initial arrow state ---
+    setTimeout(() => { updateArrows(getActiveSlider()); }, 60);
+
+    // --- Resize handler ---
+    $(window).on('resize', debounce(() => {
+        const $s = getActiveSlider();
+        if (isInited($s)) { try { $s.slick('setPosition'); } catch (_) {} }
+        updateArrowsDebounced($s);
+    }, 120));
 });
 // ========================================
 // 9. TAB PRODUCT SLIDERS 2 (golf, dart, etc.)
 // ========================================
 $(document).ready(function () {
+    const $allSliders = $('.tab_prod_bad_slider2');
+    const $prevBtn = $('#tpbs2-prev');
+    const $nextBtn = $('#tpbs2-next');
 
-    // Initialize all sliders inside tabs
-    $('.tab_prod_bad_slider2').each(function () {
-        $(this).slick({
-            infinite: false,
-            slidesToShow: 3,
-            slidesToScroll: 1,
-            dots: false,
-            arrows: false,
-            autoplay: false,
-            speed: 800,
-            pauseOnFocus: false,
-            pauseOnHover: true,
-            responsive: [
-                { breakpoint: 992, settings: { slidesToShow: 2 } },
-                { breakpoint: 576, settings: { slidesToShow: 1 } }
-            ]
-        });
-    });
+    // --- Helpers ---
+    function isInited($el) { return $el && $el.length && $el.hasClass('slick-initialized'); }
+    function getActiveSlider() { return $('.tab-pane.active .tab_prod_bad_slider2'); }
 
-    // Helper: Get active tab's slider
-    function getActiveTabSlider() {
-        return $('.tab-pane.active .tab_prod_bad_slider2');
+    function getSlickInstance($slider) {
+        if (!isInited($slider)) return null;
+        try { return $slider.slick('getSlick'); } catch (_) { return null; }
     }
 
-    // Global Prev/Next buttons for tab sliders
-    $('#tpbs2-prev').on('click', function () {
-        getActiveTabSlider().slick('slickPrev');
-    });
-
-    $('#tpbs2-next').on('click', function () {
-        getActiveTabSlider().slick('slickNext');
-    });
-
-    // Update arrow states
-    function updateTabArrows(slider) {
-        const slick = slider.slick('getSlick');
-        $('#tpbs2-prev').toggleClass('disabled', slick.currentSlide === 0);
-        $('#tpbs2-next').toggleClass('disabled', slick.currentSlide >= slick.slideCount - slick.options.slidesToShow);
+    function debounce(fn, wait) {
+        let t;
+        return function () {
+            clearTimeout(t);
+            const ctx = this, args = arguments;
+            t = setTimeout(function(){ fn.apply(ctx, args); }, wait);
+        };
     }
 
-    // On init & slide change
-    $('.tab_prod_bad_slider2').on('init afterChange', function () {
-        updateTabArrows($(this));
+    function updateArrows($slider) {
+        const slick = getSlickInstance($slider);
+        if (!slick) {
+            $prevBtn.addClass('disabled');
+            $nextBtn.addClass('disabled');
+            return;
+        }
+        const atStart = slick.currentSlide === 0;
+        const atEnd = slick.currentSlide >= (slick.slideCount - slick.options.slidesToShow);
+        $prevBtn.toggleClass('disabled', atStart);
+        $nextBtn.toggleClass('disabled', atEnd);
+    }
+    const updateArrowsDebounced = debounce(updateArrows, 120);
+
+    function strongRefresh($slider) {
+        if (!isInited($slider)) return;
+
+        // 1) Immediate reposition (helps most cases)
+        try { $slider.slick('setPosition'); } catch (_) {}
+
+        // 2) Short follow-up refresh (handles hidden->visible width calc)
+        setTimeout(function () {
+            try { $slider.slick('refresh'); } catch (_) {}
+            updateArrowsDebounced($slider);
+        }, 25);
+
+        // 3) Optional: after images are loaded, do one final position
+        const $pane = $slider.closest('.tab-pane');
+        const finalize = debounce(function () {
+            try { $slider.slick('setPosition'); } catch (_) {}
+            updateArrowsDebounced($slider);
+        }, 50);
+
+        if ($.fn.imagesLoaded) {
+            // Use imagesLoaded plugin if available
+            $pane.imagesLoaded().always(finalize);
+        } else {
+            // Fallback: wait for images in this pane
+            const $imgs = $pane.find('img');
+            let pending = 0;
+            $imgs.each(function () { if (!this.complete) pending++; });
+            if (pending === 0) {
+                finalize();
+            } else {
+                $imgs.on('load error', function () {
+                    pending--;
+                    if (pending <= 0) finalize();
+                });
+            }
+        }
+    }
+
+    function initSlider($slider) {
+        if (isInited($slider)) return;
+
+        $slider
+          .on('init afterChange reInit setPosition', function () {
+              updateArrowsDebounced($(this));
+          })
+          .slick({
+              infinite: false,
+              slidesToShow: 3,
+              slidesToScroll: 1,
+              dots: false,
+              arrows: false, // using global arrows
+              autoplay: false,
+              speed: 800,
+              pauseOnFocus: false,
+              pauseOnHover: true,
+              responsive: [
+                  { breakpoint: 992, settings: { slidesToShow: 2 } },
+                  { breakpoint: 576, settings: { slidesToShow: 1 } }
+              ]
+          });
+    }
+
+    // --- Init ALL sliders (Option B) ---
+    $allSliders.each(function () { initSlider($(this)); });
+
+    // --- Global Prev/Next wired to the CURRENT active tab's slider ---
+    $prevBtn.on('click', function () {
+        const $s = getActiveSlider();
+        if (isInited($s)) { $s.slick('slickPrev'); updateArrowsDebounced($s); }
     });
 
-    // Re-init slider when tab is shown (fixes layout issues)
-    $('a[data-bs-toggle="pill"], a[data-bs-toggle="tab"]').on('shown.bs.tab', function () {
-        const activeSlider = getActiveTabSlider();
-        setTimeout(() => {
-            activeSlider.slick('setPosition');
-            updateTabArrows(activeSlider);
-        }, 150);
+    $nextBtn.on('click', function () {
+        const $s = getActiveSlider();
+        if (isInited($s)) { $s.slick('slickNext'); updateArrowsDebounced($s); }
     });
 
-    // Initial arrow state
-    setTimeout(() => {
-        updateTabArrows(getActiveTabSlider());
-    }, 300);
+    // --- When a tab/pill becomes visible, force a strong refresh of its slider ---
+    $('a[data-bs-toggle="pill"], a[data-bs-toggle="tab"], button[data-bs-toggle="pill"], button[data-bs-toggle="tab"]')
+      .on('shown.bs.tab shown.bs.pill', function (e) {
+          const target = $(e.target).attr('data-bs-target') || $(e.target).attr('href');
+          const $pane = $(target);
+          const $slider = $pane.find('.tab_prod_bad_slider2');
+          if ($slider.length) strongRefresh($slider);
+      });
+
+    // --- Initial arrow state for the initially active tab ---
+    setTimeout(function () { updateArrows(getActiveSlider()); }, 60);
+
+    // --- Also refresh on window resize (guarded) ---
+    $(window).on('resize', debounce(function () {
+        const $s = getActiveSlider();
+        if (isInited($s)) { try { $s.slick('setPosition'); } catch (_) {} }
+        updateArrowsDebounced($s);
+    }, 120));
 });
 
 

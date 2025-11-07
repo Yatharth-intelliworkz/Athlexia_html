@@ -8,36 +8,12 @@
         height: 100vh;
         z-index: 998;
         transition: left 0.3s ease;
-        overflow-y: auto;
     }
 
     .mega-menu.active {
         left: 0;
     }
 
-
-    /* Top Navigation Tabs */
-    .top-nav {
-        background-color: #fff;
-        border-bottom: 2px solid #e0e0e0;
-        padding: 100px 0 0 0;
-    }
-
-    .top-nav .nav-link {
-        color: #333;
-        padding: 1rem 1.5rem;
-        border-bottom: 3px solid transparent;
-        transition: all 0.3s;
-        font-weight: 500;
-    }
-
-    .top-nav .nav-link:hover,
-    .top-nav .nav-link.active {
-        color: #e31837;
-        border-bottom-color: #e31837;
-    }
-
-    /* Menu Content */
     .menu-content {
         display: flex;
         border-radius: 20px;
@@ -45,7 +21,7 @@
     }
 
     .menu-left {
-        flex: 1;
+        width: 80%;
         padding: 2rem;
         background-color: #f8f8f8;
         border-top-left-radius: 20px;
@@ -53,7 +29,7 @@
     }
 
     .menu-right {
-        width: 280px;
+        width: 20%;
         background-color: #2d2d2d;
         padding: 2rem;
         color: #fff;
@@ -61,38 +37,74 @@
         border-bottom-right-radius: 20px;
     }
 
+    .menu-left .nav-tabs {
+        border: none;
+        border-radius: 0;
+        gap: 60px;
+        margin-bottom: 35px;
+        border-bottom: 1px solid var(--black-333);
+        flex-wrap: nowrap;
+    }
+
+    .menu-left .nav-link {
+        padding: 0 0 10px;
+        border: none;
+        border-bottom: 2px solid transparent;
+        border-radius: 0;
+        color: var(--black-333);
+        font-size: 22px;
+        font-weight: 500;
+        transition: all 0.3s;
+    }
+
+    .menu-left .nav-link.active {
+        padding: 0 0 10px;
+        border: none;
+        border-bottom: 2px solid var(--red-c3);
+        border-radius: 0;
+        color: var(--red-c3);
+        background-color: transparent;
+        font-weight: 600;
+        transition: all 0.3s;
+    }
+
+    .nav-link:hover {
+        border-color: transparent !important;
+    }
+
+    .nav-link:focus-visible {
+        box-shadow: none;
+    }
+
+    /* Menu Content */
     /* Category Sections */
     .category-section {
         margin-bottom: 2.5rem;
     }
 
-    .category-title {
-        font-size: 1.1rem;
-        font-weight: bold;
-        color: #333;
-        margin-bottom: 1rem;
-        padding-bottom: 0.5rem;
-        border-bottom: 2px solid #e31837;
+    .submenu_head {
+        font-size: 20px;
+        color: var(--black-333);
+        margin-bottom: 10px;
+        font-weight: 600;
     }
 
-    .category-list {
+    .submenu_list {
         list-style: none;
         padding: 0;
     }
 
-    .category-list li {
-        margin-bottom: 0.5rem;
+    .submenu_list li:not(:last-child) {
+        margin-bottom: 5px;
     }
 
-    .category-list a {
-        color: #666;
-        text-decoration: none;
-        font-size: 0.95rem;
+    .submenu_list a {
+        color: var(--black-333);
         transition: color 0.3s;
     }
 
-    .category-list a:hover {
-        color: #e31837;
+    .submenu_list a:hover {
+        color: var(--red-c3);
     }
 
     /* Right Sidebar */
@@ -109,67 +121,6 @@
         padding-left: 10px;
         color: #e31837;
     }
-
-    /* Responsive */
-    @media (max-width: 992px) {
-        .menu-content {
-            flex-direction: column;
-        }
-
-        .menu-right {
-            width: 100%;
-        }
-
-        .top-nav .nav-link {
-            padding: 0.8rem 1rem;
-            font-size: 0.9rem;
-        }
-    }
-
-    @media (max-width: 768px) {
-        .menu-left {
-            padding: 1.5rem;
-        }
-
-        .category-section {
-            margin-bottom: 2rem;
-        }
-
-        .top-nav {
-            overflow-x: auto;
-        }
-
-        .top-nav .nav {
-            flex-wrap: nowrap;
-        }
-    }
-
-    @media (max-width: 576px) {
-
-        .menu-left,
-        .menu-right {
-            padding: 1rem;
-        }
-
-        .category-title {
-            font-size: 1rem;
-        }
-
-        .category-list a {
-            font-size: 0.9rem;
-        }
-
-        .top-nav .nav-link {
-            padding: 0.6rem 0.8rem;
-            font-size: 0.85rem;
-        }
-    }
-
-    /* Demo page styling */
-    .demo-content {
-        padding: 2rem;
-        text-align: center;
-    }
 </style>
 </head>
 
@@ -177,37 +128,11 @@
     <!-- Mega Menu -->
     <div class="mega-menu" id="megaMenu">
         <div class="container-fluid">
-            <!-- Top Navigation -->
-            <!-- <div class="top-nav">
-                <div class="container">
-                    <ul class="nav nav-tabs border-0" id="sportsTabs" role="tablist">
-                        <li class="nav-item">
-                            <a class="nav-link active" data-bs-toggle="tab" href="#allSports">All Sports</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" data-bs-toggle="tab" href="#men">Men</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" data-bs-toggle="tab" href="#women">Women</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" data-bs-toggle="tab" href="#kids">Kids</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" data-bs-toggle="tab" href="#accessories">Sports Accessories</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" data-bs-toggle="tab" href="#gym">Gym Activewear & Equipment</a>
-                        </li>
-                    </ul>
-                </div>
-            </div> -->
-
             <!-- Menu Content -->
             <div class="menu-content">
                 <div class="menu-left">
                     <div class="container">
-                        <ul class="nav nav-tabs border-0" id="sportsTabs" role="tablist">
+                        <ul class="nav nav-tabs" id="sportsTabs" role="tablist">
                             <li class="nav-item">
                                 <a class="nav-link active" data-bs-toggle="tab" href="#allSports">All Sports</a>
                             </li>
@@ -233,8 +158,8 @@
                                 <div class="row">
                                     <div class="col-md-3 col-sm-6">
                                         <div class="category-section">
-                                            <h3 class="category-title">Outdoor Sports</h3>
-                                            <ul class="category-list">
+                                            <h3 class="submenu_head">Outdoor Sports</h3>
+                                            <ul class="submenu_list">
                                                 <li><a href="#">Hiking and Trekking</a></li>
                                                 <li><a href="#">Skiing and Snowboarding</a></li>
                                                 <li><a href="#">Rock Climbing & Mountaineering</a></li>
@@ -246,8 +171,8 @@
                                     </div>
                                     <div class="col-md-3 col-sm-6">
                                         <div class="category-section">
-                                            <h3 class="category-title">Running & Cycling</h3>
-                                            <ul class="category-list">
+                                            <h3 class="submenu_head">Running & Cycling</h3>
+                                            <ul class="submenu_list">
                                                 <li><a href="#">Running</a></li>
                                                 <li><a href="#">Walking</a></li>
                                                 <li><a href="#">Triathlon</a></li>
@@ -258,8 +183,8 @@
                                     </div>
                                     <div class="col-md-3 col-sm-6">
                                         <div class="category-section">
-                                            <h3 class="category-title">Fitness Sports</h3>
-                                            <ul class="category-list">
+                                            <h3 class="submenu_head">Fitness Sports</h3>
+                                            <ul class="submenu_list">
                                                 <li><a href="#">Fitness Cardio</a></li>
                                                 <li><a href="#">Body Building and Cross Training</a></li>
                                                 <li><a href="#">Soft Training and Pilates</a></li>
@@ -272,8 +197,8 @@
                                     </div>
                                     <div class="col-md-3 col-sm-6">
                                         <div class="category-section">
-                                            <h3 class="category-title">Team Sports</h3>
-                                            <ul class="category-list">
+                                            <h3 class="submenu_head">Team Sports</h3>
+                                            <ul class="submenu_list">
                                                 <li><a href="#">Football</a></li>
                                                 <li><a href="#">Cricket</a></li>
                                                 <li><a href="#">Basketball</a></li>
@@ -288,8 +213,8 @@
                                 <div class="row mt-4">
                                     <div class="col-md-3 col-sm-6">
                                         <div class="category-section">
-                                            <h3 class="category-title">Water Sports</h3>
-                                            <ul class="category-list">
+                                            <h3 class="submenu_head">Water Sports</h3>
+                                            <ul class="submenu_list">
                                                 <li><a href="#">Swimming</a></li>
                                                 <li><a href="#">Surfing and Bodyboarding</a></li>
                                                 <li><a href="#">Snorkeling and Diving</a></li>
@@ -300,8 +225,8 @@
                                     </div>
                                     <div class="col-md-3 col-sm-6">
                                         <div class="category-section">
-                                            <h3 class="category-title">Target Sports</h3>
-                                            <ul class="category-list">
+                                            <h3 class="submenu_head">Target Sports</h3>
+                                            <ul class="submenu_list">
                                                 <li><a href="#">Carom</a></li>
                                                 <li><a href="#">Golf</a></li>
                                                 <li><a href="#">Archery</a></li>
@@ -313,8 +238,8 @@
                                     </div>
                                     <div class="col-md-3 col-sm-6">
                                         <div class="category-section">
-                                            <h3 class="category-title">Racket Sports</h3>
-                                            <ul class="category-list">
+                                            <h3 class="submenu_head">Racket Sports</h3>
+                                            <ul class="submenu_list">
                                                 <li><a href="#">Badminton</a></li>
                                                 <li><a href="#">Tennis</a></li>
                                                 <li><a href="#">Table Tennis</a></li>
@@ -326,8 +251,8 @@
                                     </div>
                                     <div class="col-md-3 col-sm-6">
                                         <div class="category-section">
-                                            <h3 class="category-title">Skating</h3>
-                                            <ul class="category-list">
+                                            <h3 class="submenu_head">Skating</h3>
+                                            <ul class="submenu_list">
                                                 <li><a href="#">Roller Skating</a></li>
                                                 <li><a href="#">In Line Roller Skates</a></li>
                                                 <li><a href="#">Protective Kit</a></li>
