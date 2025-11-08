@@ -1,0 +1,80 @@
+@font-face {
+    font-family: 'Spantaran';
+    src: url('@/assets/fonts/Spantaran.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
+
+:root {
+    --font-primary: 'Sunflower', sans-serif;
+    --font-display: 'Spantaran', sans-serif;
+    --black-333: #333333;
+    --black-111: #111111;
+    --black-23: #231F20;
+    --red-c3: #C3181E;
+    --grey-ddd: #333;
+    /* --grey-ddd: #DDDDDD; */
+    --grey-bbb: #bbbbbb;
+    --grey-666: #666666;
+    --grey-eee: #EEEEEE;
+    --grey-b4b4: #B4BAE8;
+    --yellow-ff: #FFF600;
+}
+
+body {
+    font-family: var(--font-primary);
+    font-style: normal;
+    line-height: normal;
+    color: var(--black-333);
+    font-size: 16px;
+}
+
+.brand-title {
+    font-family: var(--font-display);
+}
+
+/* comman class */
+a {
+  text-decoration: none;
+  color: unset;
+  display: inline-block;
+}
+
+.spartan_title_48 {
+  font-family: 'Spantaran', sans-serif;
+  font-size: 48px;
+  line-height: normal;
+  color: var(--yellow-ff);
+}
+
+.black_title-48 {
+  font-family: 'Spantaran', sans-serif;
+  font-size: 48px;
+  line-height: normal;
+  color: var(--black-111);
+}
+
+.mt-75 {
+  margin-top: 75px;
+}
+
+input:focus-visible {
+  box-shadow: none;
+  outline: 0;
+}
+
+.hero_title_wraper {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 30px;
+  padding-right: 40px;
+}
+
+.hero_title_arr img {
+  cursor: pointer;
+}
+
+
+/* comman class */

@@ -1,0 +1,122 @@
+/* header */
+.header {
+    position: relative;
+    z-index: 999;
+}
+
+.header_wrapper {
+    display: flex;
+    gap: 64px;
+    align-items: center;
+    padding: 20px 0;
+}
+
+/* ---- Hamburger container ---- */
+.hamburger {
+    display: inline-flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 6px;
+    width: 40px;
+    height: 40px;
+    cursor: pointer;
+    padding: 8px;
+    box-sizing: border-box;
+    background: transparent;
+    border: none;
+}
+
+/* ---- Each line ---- */
+.line {
+    height: 4px;
+    background: #222;
+    border-radius: 2px;
+    transition: all .3s ease;
+    width: 100%;
+}
+
+.line:nth-child(3) {
+    width: 60%;
+    margin-left: 0;
+}
+
+/* ---- ACTIVE (X) state ---- */
+.active .line:nth-child(1) {
+    transform: translateY(10px) rotate(45deg);
+}
+
+.active .line:nth-child(2) {
+    opacity: 0;
+}
+
+.active .line:nth-child(3) {
+    width: 100%;
+    transform: translateY(-10px) rotate(-45deg);
+}
+
+.head_left {
+    display: flex;
+    gap: 30px;
+}
+
+.head_center {
+    display: flex;
+    align-items: center;
+    gap: 30px;
+}
+
+.head_center p {
+    margin-bottom: 5px;
+    width: fit-content;
+    border-bottom: 1px solid var(--black-333);
+}
+
+.head_pro_search {
+    position: relative;
+    display: inline-block;
+}
+
+.head_search {
+    height: 50px;
+    width: 1050px;
+    border-radius: 10px;
+    padding: 8px 12px;
+    border: 1px solid var(--grey-bbb);
+}
+
+.head_pro_search span {
+    position: absolute;
+    right: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--black-333);
+    cursor: pointer;
+}
+
+.head_right {
+    display: flex;
+    align-items: center;
+    gap: 30px;
+}
+
+.signin_select {
+    border: none;
+    background: transparent;
+}
+
+.sign_block {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+/* optional: constrain big search width on small screens */
+@media (max-width: 992px) {
+    .head_search {
+        width: 100%;
+    }
+
+    .header_wrapper {
+        gap: 20px;
+    }
+}

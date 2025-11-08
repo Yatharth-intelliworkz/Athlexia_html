@@ -1,0 +1,16 @@
+.btn_2 {
+  background-color: var(--black-111);
+  padding: 10px 15px;
+  border-radius: 10px;
+  color: white;
+  font-size: 16px;
+  line-height: 24px;
+  display: flex;
+  width: fit-content;
+  align-items: center;
+  transition: background-color 0.3s ease;
+}
+
+.btn_2:hover {
+  background-color: #000;
+}

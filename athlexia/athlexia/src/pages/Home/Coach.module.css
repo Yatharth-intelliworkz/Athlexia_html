@@ -1,0 +1,15 @@
+.coach_wrapper {
+    position: relative;
+}
+.coach_content {
+    width: 650px;
+    margin: 0 110px;
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+@media (max-width: 992px) {
+  
+}

@@ -1,0 +1,38 @@
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 24px;
+}
+
+.title {
+  font-size: 48px;
+  font-weight: 700;
+  margin: 0;
+}
+
+.arrows {
+  display: flex;
+  gap: 10px;
+}
+
+.arrowBtn {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  transition: transform 0.2s ease, opacity 0.3s ease;
+}
+
+.arrowBtn img {
+  width: 32px;
+  height: auto;
+}
+
+.arrowBtn:hover:not(:disabled) {
+  transform: scale(1.1);
+}
+
+.disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
